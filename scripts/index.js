@@ -12,7 +12,7 @@ function createCard(item, {deleteCard}){
     
     const deleteButton = cardElement.querySelector('.card__delete-button');
     deleteButton.addEventListener('click', function(evt){
-        removeCard(evt.target.closest('.card'));
+        deleteCard(evt.target.closest('.card'));
     });
 
     return cardElement;
@@ -26,5 +26,5 @@ function addCard(cardElement){
     cardConteiner.append(cardElement);
 }
 for (let i = 0; i < 6; i++){
-    addCard(createCard(initialCards[i], removeCard));
+    addCard(createCard(initialCards[i], {deleteCard: removeCard}));
 }
