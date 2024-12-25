@@ -1,7 +1,7 @@
 import './pages/index.css';
 import initialCards from './scripts/cards.js';
 import {createCard, removeCard, likePic} from './scripts/card.js';
-import {openModal, closeModal}  from './scripts/modal.js';
+import {openModal, closeModal, escCloseModal, overlayCloseModal}  from './scripts/modal.js';
 
 const popupEdit = document.querySelector('.popup_type_edit');
 const popupNewCard = document.querySelector('.popup_type_new-card');
@@ -59,21 +59,17 @@ buttonClosePopup[2].addEventListener('click', function(){
 const page = document.querySelector('.page__content');
 
 page.addEventListener('click', function(){
-    const activePopus = document.querySelector('.popup_is-opened');  
-    if(activePopus !== null){
-        activePopus.addEventListener('click', function(evt){
-            if (evt.target.classList.contains('popup')){
-                closeModal(activePopus);
-            }
-        });
+    const activePopup = document.querySelector('.popup_is-opened');  
+    if(activePopup !== null){
+        overlayCloseModal(activePopup);
     }
 });
 //закрытие попапов по "Esc"
 addEventListener('keydown', function(evt){
-    const activePopus = document.querySelector('.popup_is-opened');
     if (evt.key === 'Escape'){
-        if(activePopus !== null){
-            closeModal(activePopus);
+        const activePopup = document.querySelector('.popup_is-opened');
+        if(activePopup !== null){
+            escCloseModal(activePopup);
         }
     }
 });
