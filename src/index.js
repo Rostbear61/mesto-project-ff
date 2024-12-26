@@ -6,7 +6,6 @@ import {openModal, closeModal}  from './scripts/modal.js';
 const popupEdit = document.querySelector('.popup_type_edit');
 const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupImage = document.querySelector('.popup_type_image');
-
 let activePopup;
 
 //плавность открытия окон
@@ -26,12 +25,14 @@ for (let i = 0; i < 6; i++){
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const profileName = document.querySelector('.popup__input_type_name');
 const profileDescription = document.querySelector('.popup__input_type_description');
+const editProfileTitle = document.querySelector('.profile__title');
+const editProfileDescription = document.querySelector('.profile__description');
+
 buttonEditProfile.addEventListener('click', function(){
-    profileName.value = document.querySelector('.profile__title').textContent;
-    profileDescription.value = document.querySelector('.profile__description').textContent;
+    profileName.value = editProfileTitle.textContent;
+    profileDescription.value = editProfileDescription.textContent;
     activePopup = popupEdit;
     openModal(activePopup);
-    
 });
 //обработка клика по кнопке добавления профиля profile__add-button
 const buttonAddProfile = document.querySelector('.profile__add-button');
@@ -41,12 +42,23 @@ buttonAddProfile.addEventListener('click', function(){
 });
 //Функция открытие попапов по клику по картинке
 const popupImagePic = document.querySelector('.popup__image');
+const popupCaption = document.querySelector('.popup__caption');
 function imageOpenPopup(element) {
     popupImagePic.src = element.getAttribute('src');
     popupImagePic.alt = element.getAttribute('alt');
-    document.querySelector('.popup__caption').textContent = popupImagePic.alt;
+    popupCaption.textContent = popupImagePic.alt;
     activePopup = popupImage;
     openModal(activePopup);
+}
+//обработка клико по кнопке закрытия окна
+const buttonsClosePopup = document.querySelectorAll('.popup__close');
+
+buttonsClosePopup.forEach(item => {
+    item.addEventListener('click', closeButton);
+});
+//закрытие окна кликом по крестику
+function closeButton(){
+    closeModal(activePopup);
 }
 //Изменение имени и описание профиля
 const formEditProfile = document.forms['edit-profile'];
@@ -77,4 +89,4 @@ function handleAddPlace(evt) {
 };
 formNewPlace.addEventListener('submit', handleAddPlace);
 
-export {popupEdit, popupNewCard, popupImage, activePopup};
+export {activePopup};
