@@ -40,7 +40,7 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
-      <form class="popup__form" name="edit-profile">
+      <form class="popup__form" name="edit-profile" novalidate>
         <input type="text" name="name" class="popup__input popup__input_type_name" id="name-input" placeholder="Имя" minlength="2" maxlength="40" pattern="^[a-zA-ZА-Яа-яЁё\s\-]+$" required data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы">
         <span class="form__input-error name-input-error"></span>
         <input type="text" name="description" class="popup__input popup__input_type_description" id="description-input" placeholder="Занятие" minlength="2" maxlength="200" pattern="^[a-zA-ZА-Яа-яЁё\s\-]+$" required data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы">
@@ -53,7 +53,7 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Новое место</h3>
-      <form class="popup__form" name="new-place">
+      <form class="popup__form" name="new-place" novalidate>
         <input type="text" name="place-name" class="popup__input popup__input_type_card-name" id="card-name-input" placeholder="Название" minlength="2" maxlength="30" pattern="^[a-zA-ZА-Яа-яЁё\s\-]+$" required data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы">
         <span class="form__input-error card-name-input-error"></span>
         <input type="url" name="link" class="popup__input popup__input_type_url" id="card-url-input" placeholder="Ссылка на картинку" required>
@@ -80,7 +80,7 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Обновить аватар</h3>
-      <form class="popup__form" name="form_edit-profile_avatar">
+      <form class="popup__form" name="form_edit-profile_avatar" novalidate>
         <div class="input_avatar_link">
           <input type="url" name="avatar_link" class="popup__input popup__input_avatar_link" id="avatar_link-input" placeholder="URL-картинки" required>
           <span class="form__input-error avatar_link-input-error"></span>

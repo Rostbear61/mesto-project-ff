@@ -6,6 +6,7 @@ function hideInputError(formElement, inputElement){
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.remove(errorClass);
   errorElement.textContent = '';
+  inputElement.setCustomValidity("");
 }
 
 function enableValidation(
@@ -27,8 +28,10 @@ function enableValidation(
     function toggleButtonState(inputList, buttonSub){
       if(hasValidInpit(inputList)){
         buttonSub.classList.add(inactiveButtonClass);
+        buttonSub.setAttribute("disabled", "");
       } else {
         buttonSub.classList.remove(inactiveButtonClass);
+        buttonSub.removeAttribute("disabled", "");
       }
     };
     

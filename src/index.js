@@ -24,9 +24,10 @@ function waitLoading (formElement){
     const button = formElement.querySelector('.popup__button');
     button.textContent = 'Сохранение...';
 }
+//функция восстановления надписи когда загрузка завершена
 function completeLoading (formElement){
     const button = formElement.querySelector('.popup__button');
-    button.textContent = 'Сохраненить';
+    button.textContent = 'Сохранить';
 }
 
 //плавность открытия окон
@@ -52,21 +53,23 @@ function removeCard(element, idCard){
                 element.remove();
                 buttonDeleteCard.removeEventListener('click', clickDelete);
                 closeModal(activePopup);
-                completeLoading(activePopup);
             })
             .catch(err => {
                 console.log(err);
             }) 
+            .finally(() => {
+                completeLoading(activePopup);
+            })
     }
     buttonDeleteCard.addEventListener('click', clickDelete);
 }
 //функция лайка
 function likePic(element, id, cardLike){
-    element.classList.toggle('card__like-button_is-active');
    if(element.classList.contains('card__like-button_is-active')) {
         putCardLikeAPI(adrCardLike, id)
         .then((data) => {
-        cardLike.textContent = data.likes.length;
+            cardLike.textContent = data.likes.length;
+            element.classList.add('card__like-button_is-active');
         })
         .catch(err => {
             console.log(err);
@@ -74,6 +77,7 @@ function likePic(element, id, cardLike){
    } else {
         deleteCardAPI(adrCardLike, id)
         .then((data) => {
+            element.classList.remove('card__like-button_is-active');
             cardLike.textContent = data.likes.length;
         })
         .catch(err => {
@@ -96,16 +100,18 @@ function submitProfileImg(evt){
     waitLoading(activePopup);
     const linkEditAvatar = document.querySelector('.popup__input_avatar_link');
     patchAPI(adrProfileAvatar, linkEditAvatar.value)
-        .then((data) => {
-            const atrStyle = `background-image: url(`+ data.avatar + `)`;
-            editProfileImg.setAttribute('style', atrStyle);
-            linkEditAvatar.value = '';
-            closeModal(activePopup);
-            completeLoading(activePopup);
-        }) 
-        .catch(err => {
-            console.log(err);
-        })  
+    .then((data) => {
+         const atrStyle = `background-image: url(`+ data.avatar + `)`;
+        editProfileImg.setAttribute('style', atrStyle);
+        linkEditAvatar.value = '';
+        closeModal(activePopup);
+    }) 
+    .catch(err => {
+        console.log(err);
+    }) 
+    .finally(() => {
+        completeLoading(activePopup);
+    }) 
 }
 
 //обработка клика по кнопке редактирования профиля
@@ -161,11 +167,13 @@ function profileFormSubmit(evt) {
         editProfileTitle.textContent = data.name;
         editProfileDescription.textContent = data.about;  
         closeModal(popupEdit);
-        completeLoading(activePopup);
     }) 
     .catch(err => {
         console.log(err);
     })  
+    .finally(() => {
+        completeLoading(activePopup);
+    })
 };
 formEditProfile.addEventListener('submit', profileFormSubmit);
 //Добавление карточки
@@ -188,16 +196,17 @@ function handleAddPlace(evt) {
         };
         cardConteiner.prepend(createCard(newCardObject, {deleteCard: removeCard, likeCard:likePic, handleImageClick:imageOpenPopup}));
         closeModal(activePopup);
-        completeLoading(activePopup);
         formNewPlace.reset();
         clearValidation(activePopup)
     })
     .catch(err => {
         console.log(err);
     }) 
+    .finally(() => {
+        completeLoading(activePopup);
+    })
 };
 formNewPlace.addEventListener('submit', handleAddPlace);
-
 
 //включение Валидации форм
 enableValidation('.popup__form', '.popup__input', '.popup__button', 'button_inactive', 'popup__input_invalid');

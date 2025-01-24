@@ -3,12 +3,12 @@ function createCard(item, {deleteCard, likeCard, handleImageClick}){
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
     const cardImg = cardElement.querySelector('img');
     const cardLike = cardElement.querySelector('.card__like-num');
-
+    const deleteButton = cardElement.querySelector('.card__delete-button');
+    
     cardImg.src = item.link;
     cardImg.alt = 'Вид на ' + item.name;
     cardElement.querySelector('.card__title').textContent = item.name;
     cardLike.textContent = item.numLike.length;
-    const deleteButton = cardElement.querySelector('.card__delete-button');
     deleteButton.addEventListener('click', function(evt){
         deleteCard(evt.target.closest('.card'), item.idCard);
     });
@@ -22,7 +22,7 @@ function createCard(item, {deleteCard, likeCard, handleImageClick}){
         handleImageClick(evt.target);
     });
 
-    if(item.author !== "c34995df82aa9dc0df91ea68") {
+    if(item.author !== item.author) {
         deleteButton.classList.add('hide__delete-button');
     } else {
         deleteButton.classList.remove('hide__delete-button');
