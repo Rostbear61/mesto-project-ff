@@ -119,6 +119,7 @@ buttonEditProfile.addEventListener('click', function(){
     profileName.value = editProfileTitle.textContent;
     profileDescription.value = editProfileDescription.textContent;
     activePopup = popupEdit;
+    clearValidation(activePopup)
     openModal(activePopup);
 });
 //обработка клика по кнопке добавления профиля profile__add-button
@@ -146,7 +147,6 @@ buttonsClosePopup.forEach(item => {
 //закрытие окна кликом по крестику
 function closeButton(){
     closeModal(activePopup);
-    clearValidation(activePopup, inputErrorClass);
 }
 //Изменение имени и описание профиля
 const formEditProfile = document.forms['edit-profile'];
@@ -190,6 +190,7 @@ function handleAddPlace(evt) {
         closeModal(activePopup);
         completeLoading(activePopup);
         formNewPlace.reset();
+        clearValidation(activePopup)
     })
     .catch(err => {
         console.log(err);

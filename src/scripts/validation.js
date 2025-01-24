@@ -1,8 +1,10 @@
 // включение валидации вызовом enableValidation
 // все настройки передаются при вызове
-function hideInputError(formElement, inputElement, inputErrorClass){
+let errorClass;
+
+function hideInputError(formElement, inputElement){
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove(inputErrorClass);
+  inputElement.classList.remove(errorClass);
   errorElement.textContent = '';
 }
 
@@ -12,7 +14,8 @@ function enableValidation(
     submitButtonSelector,
     inactiveButtonClass,
     inputErrorClass){
-      
+
+    errorClass = inputErrorClass; 
     const formList = Array.from(document.querySelectorAll(formSelector));
 
     function hasValidInpit(inputList){
@@ -43,7 +46,7 @@ function enableValidation(
       if(!inputElement.validity.valid) {
         showInputError(formElement, inputElement, inputElement.validationMessage);
       } else {
-        hideInputError(formElement, inputElement, inputErrorClass);
+        hideInputError(formElement, inputElement);
       }
     }
 
@@ -66,11 +69,11 @@ function enableValidation(
     });
   }
   
-function clearValidation(profileForm, inputErrorClass){ 
+function clearValidation(profileForm){ 
      const inputList = Array.from(profileForm.querySelectorAll('.popup__input'));
      inputList.forEach((inputElement) => {
       console.log(inputElement);
-      hideInputError(profileForm, inputElement, inputErrorClass);
+      hideInputError(profileForm, inputElement);
      });
   }
 
