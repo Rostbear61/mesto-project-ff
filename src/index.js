@@ -15,8 +15,8 @@ const adrCards = 'cards';
 const adrProfile = 'users/me';
 const adrProfileAvatar = 'users/me/avatar';
 const adrCardLike = 'cards/likes';
-const inputErrorClass = 'popup__input_invalid';
 
+let profileId;
 let activePopup;
 
 //функция изменения надписи кнопки при загрузке
@@ -192,7 +192,8 @@ function handleAddPlace(evt) {
             numLike: data.likes,
             author : data.owner._id,
             idCard: data._id,
-            profileName : editProfileTitle
+            profileName : editProfileTitle,
+            profileId : profileId
         };
         cardConteiner.prepend(createCard(newCardObject, {deleteCard: removeCard, likeCard:likePic, handleImageClick:imageOpenPopup}));
         closeModal(activePopup);
@@ -220,6 +221,9 @@ Promise.all([getAPI(adrProfile), getAPI(adrCards)])
     editProfileTitle.textContent = profileInfo.name;
     editProfileDescription.textContent = profileInfo.about;  
     editProfileImg.setAttribute('style', atrStyle);
+    profileId = profileInfo._id;
+
+    console.log(profileId);
 
     allCards.forEach(item => {
         const newCardObject = {
@@ -228,7 +232,8 @@ Promise.all([getAPI(adrProfile), getAPI(adrCards)])
             numLike: item.likes,
             author : item.owner._id,
             idCard: item._id,
-            profileName : editProfileTitle
+            profileName : editProfileTitle,
+            profileId : profileId
         };
         cardConteiner.append(createCard(newCardObject, {deleteCard: removeCard, likeCard:likePic, handleImageClick:imageOpenPopup}));
     })

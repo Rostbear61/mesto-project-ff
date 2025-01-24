@@ -21,8 +21,7 @@ function createCard(item, {deleteCard, likeCard, handleImageClick}){
     cardImg.addEventListener('click', function(evt){
         handleImageClick(evt.target);
     });
-
-    if(item.author !== item.author) {
+    if(item.author !== item.profileId) {
         deleteButton.classList.add('hide__delete-button');
     } else {
         deleteButton.classList.remove('hide__delete-button');
