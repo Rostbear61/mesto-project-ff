@@ -8,6 +8,10 @@
   box-sizing: border-box;
   padding: 34px 36px;
 }
+.popup_type_delete_card .popup__content,
+.popup_type_edit_avatar .popup__content {
+  min-height: 0px;
+}
 
 @media screen and (max-width: 568px) {
   .popup__content {

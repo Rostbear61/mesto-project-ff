@@ -1,26 +1,113 @@
 import './pages/index.css';
-import initialCards from './scripts/cards.js';
-import {createCard, removeCard, likePic} from './scripts/card.js';
+import {createCard} from './scripts/card.js';
 import {openModal, closeModal}  from './scripts/modal.js';
+import {getAPI, patchProfile, postAPI, deleteCardAPI, putCardLikeAPI, patchAPI} from './scripts/api.js';
+import {enableValidation, clearValidation} from './scripts/validation.js';
 
 const popupEdit = document.querySelector('.popup_type_edit');
 const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupImage = document.querySelector('.popup_type_image');
+const popupDelete = document.querySelector('.popup_type_delete_card');
+const popupEditAvatar = document.querySelector('.popup_type_edit_avatar');
+const editProfileImg = document.querySelector('.profile__image');
+const buttonDeleteCard = document.querySelector('.popup__button_delete');
+const adrCards = 'cards';
+const adrProfile = 'users/me';
+const adrProfileAvatar = 'users/me/avatar';
+const adrCardLike = 'cards/likes';
+const inputErrorClass = 'popup__input_invalid';
+
 let activePopup;
+
+//функция изменения надписи кнопки при загрузке
+function waitLoading (formElement){
+    const button = formElement.querySelector('.popup__button');
+    button.textContent = 'Сохранение...';
+}
+function completeLoading (formElement){
+    const button = formElement.querySelector('.popup__button');
+    button.textContent = 'Сохраненить';
+}
 
 //плавность открытия окон
 popupImage.classList.add('popup_is-animated');
 popupEdit.classList.add('popup_is-animated');
 popupNewCard.classList.add('popup_is-animated');
+popupDelete.classList.add('popup_is-animated');
+popupEditAvatar.classList.add('popup_is-animated');
 // @todo: DOM узлы
 const cardConteiner = document.querySelector('.places__list');
-// @todo: Вывести карточки на страницу
-function addCard(cardElement){
-    cardConteiner.append(cardElement);
-};
-for (let i = 0; i < 6; i++){
-    addCard(createCard(initialCards[i], {deleteCard: removeCard, likeCard:likePic, handleImageClick:imageOpenPopup}));
+//функция удаления карточки
+function removeCard(element, idCard){
+    activePopup = popupDelete;
+    openModal(activePopup);
+
+    function clickDelete(){
+        sendDeleteCard(adrCards, idCard, element);
+        waitLoading(activePopup);
+    }
+    function sendDeleteCard(adrCards, idCard, element){
+        deleteCardAPI(adrCards, idCard)
+            .then(() => {
+                element.remove();
+                buttonDeleteCard.removeEventListener('click', clickDelete);
+                closeModal(activePopup);
+                completeLoading(activePopup);
+            })
+            .catch(err => {
+                console.log(err);
+            }) 
+    }
+    buttonDeleteCard.addEventListener('click', clickDelete);
 }
+//функция лайка
+function likePic(element, id, cardLike){
+    element.classList.toggle('card__like-button_is-active');
+   if(element.classList.contains('card__like-button_is-active')) {
+        putCardLikeAPI(adrCardLike, id)
+        .then((data) => {
+        cardLike.textContent = data.likes.length;
+        })
+        .catch(err => {
+            console.log(err);
+        }) 
+   } else {
+        deleteCardAPI(adrCardLike, id)
+        .then((data) => {
+            cardLike.textContent = data.likes.length;
+        })
+        .catch(err => {
+            console.log(err);
+        }) 
+   }
+}
+
+//редактирование аватарки
+const buttonEditAvatar = document.querySelector('.popup__button_edit_avatar');
+const formEditAvatar = document.forms['form_edit-profile_avatar'];
+editProfileImg.addEventListener('click', () => {
+    activePopup = popupEditAvatar;
+    openModal(activePopup);
+    formEditAvatar.addEventListener('submit', submitProfileImg);
+})
+
+function submitProfileImg(evt){
+    evt.preventDefault();
+    waitLoading(activePopup);
+    const linkEditAvatar = document.querySelector('.popup__input_avatar_link');
+    patchAPI(adrProfileAvatar, linkEditAvatar.value)
+        .then((data) => {
+            const atrStyle = `background-image: url(`+ data.avatar + `)`;
+            editProfileImg.setAttribute('style', atrStyle);
+            linkEditAvatar.value = '';
+            closeModal(activePopup);
+            completeLoading(activePopup);
+        }) 
+        .catch(err => {
+            console.log(err);
+        })  
+}
+
 //обработка клика по кнопке редактирования профиля
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const profileName = document.querySelector('.popup__input_type_name');
@@ -50,7 +137,7 @@ function imageOpenPopup(element) {
     activePopup = popupImage;
     openModal(activePopup);
 }
-//обработка клико по кнопке закрытия окна
+//обработка клика по кнопке закрытия окна
 const buttonsClosePopup = document.querySelectorAll('.popup__close');
 
 buttonsClosePopup.forEach(item => {
@@ -59,6 +146,7 @@ buttonsClosePopup.forEach(item => {
 //закрытие окна кликом по крестику
 function closeButton(){
     closeModal(activePopup);
+    clearValidation(activePopup, inputErrorClass);
 }
 //Изменение имени и описание профиля
 const formEditProfile = document.forms['edit-profile'];
@@ -67,9 +155,17 @@ const jobInput = formEditProfile.elements['description'];
 
 function profileFormSubmit(evt) {
     evt.preventDefault();
-    document.querySelector('.profile__title').textContent = nameInput.value;
-    document.querySelector('.profile__description').textContent = jobInput.value;
-    closeModal(popupEdit);
+    waitLoading(activePopup);
+    patchProfile(adrProfile, nameInput.value, jobInput.value)
+    .then((data) => {
+        editProfileTitle.textContent = data.name;
+        editProfileDescription.textContent = data.about;  
+        closeModal(popupEdit);
+        completeLoading(activePopup);
+    }) 
+    .catch(err => {
+        console.log(err);
+    })  
 };
 formEditProfile.addEventListener('submit', profileFormSubmit);
 //Добавление карточки
@@ -79,14 +175,57 @@ const formLink = formNewPlace.elements['link'];
 
 function handleAddPlace(evt) {
     evt.preventDefault();
-    const newCardObject = {
-        name: formPlaceName.value,
-        link: formLink.value
-    };
-    cardConteiner.prepend(createCard(newCardObject, {deleteCard: removeCard, likeCard:likePic, handleImageClick:imageOpenPopup}));
-    closeModal(activePopup);
-    formNewPlace.reset();
+    waitLoading(activePopup);
+    postAPI(adrCards, formPlaceName.value, formLink.value)
+    .then((data) => {
+        const newCardObject = {
+            name: data.name,
+            link: data.link,
+            numLike: data.likes,
+            author : data.owner._id,
+            idCard: data._id,
+            profileName : editProfileTitle
+        };
+        cardConteiner.prepend(createCard(newCardObject, {deleteCard: removeCard, likeCard:likePic, handleImageClick:imageOpenPopup}));
+        closeModal(activePopup);
+        completeLoading(activePopup);
+        formNewPlace.reset();
+    })
+    .catch(err => {
+        console.log(err);
+    }) 
 };
 formNewPlace.addEventListener('submit', handleAddPlace);
 
+
+//включение Валидации форм
+enableValidation('.popup__form', '.popup__input', '.popup__button', 'button_inactive', 'popup__input_invalid');
+
+//загрузка данных профиля и карточек с сервера
+// @todo: Вывести карточки на страницу
+
+Promise.all([getAPI(adrProfile), getAPI(adrCards)])
+.then(([profileInfo, allCards]) => {
+    const atrStyle = `background-image: url(`+ profileInfo.avatar + `)`;
+    editProfileTitle.textContent = profileInfo.name;
+    editProfileDescription.textContent = profileInfo.about;  
+    editProfileImg.setAttribute('style', atrStyle);
+
+    allCards.forEach(item => {
+        const newCardObject = {
+            name: item.name,
+            link: item.link,
+            numLike: item.likes,
+            author : item.owner._id,
+            idCard: item._id,
+            profileName : editProfileTitle
+        };
+        cardConteiner.append(createCard(newCardObject, {deleteCard: removeCard, likeCard:likePic, handleImageClick:imageOpenPopup}));
+    })
+})
+.catch(err => {
+    console.log(err);
+}) 
+
 export {activePopup};
+export {removeCard, likePic};

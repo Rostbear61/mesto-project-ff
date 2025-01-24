@@ -18,6 +18,12 @@
   background: rgba(0, 0, 0, 0.8);
   cursor: pointer;
 }
+.button_inactive{
+  color: rgb(0, 0, 0);
+  background: rgb(255, 255, 255);
+  border: 1px solid rgb(0, 0, 0);
+  opacity: 20%;
+}
 
 @media screen and (max-width: 568px) {
   .popup__button {
