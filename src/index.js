@@ -65,7 +65,8 @@ function removeCard(element, idCard){
 }
 //функция лайка
 function likePic(element, id, cardLike){
-   if(element.classList.contains('card__like-button_is-active')) {
+
+   if(!element.classList.contains('card__like-button_is-active')) {
         putCardLikeAPI(adrCardLike, id)
         .then((data) => {
             cardLike.textContent = data.likes.length;
@@ -222,8 +223,6 @@ Promise.all([getAPI(adrProfile), getAPI(adrCards)])
     editProfileDescription.textContent = profileInfo.about;  
     editProfileImg.setAttribute('style', atrStyle);
     profileId = profileInfo._id;
-
-    console.log(profileId);
 
     allCards.forEach(item => {
         const newCardObject = {
