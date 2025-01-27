@@ -10,7 +10,6 @@ const popupImage = document.querySelector('.popup_type_image');
 const popupDelete = document.querySelector('.popup_type_delete_card');
 const popupEditAvatar = document.querySelector('.popup_type_edit_avatar');
 const editProfileImg = document.querySelector('.profile__image');
-const buttonDeleteCard = document.querySelector('.popup__button_delete');
 const formEditAvatar = document.forms['form_edit-profile_avatar'];
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const profileName = document.querySelector('.popup__input_type_name');
