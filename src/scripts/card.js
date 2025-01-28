@@ -21,7 +21,7 @@ function createCard(item, {deleteCard, likeCard, handleImageClick}){
 
     const likeButton = cardElement.querySelector('.card__like-button');
     likeButton.addEventListener('click', function(evt){
-        likePic(evt.target, item.idCard, cardLike);
+        likeCard(evt.target, item.idCard, cardLike);
     });
 
     cardImg.addEventListener('click', function(evt){
@@ -32,11 +32,13 @@ function createCard(item, {deleteCard, likeCard, handleImageClick}){
     } else {
         deleteButton.classList.remove('hide__delete-button');
     }
-    item.numLike.forEach((array) => {
-        if (array.name === item.profileName.textContent){
+   
+    if (item.numLike.some((element) => {
+        return element.name === item.profileName.textContent 
+    })){
             likeButton.classList.add('card__like-button_is-active');
-        }
-    })
+    }
+   
     return cardElement;
 }
 
