@@ -1,5 +1,5 @@
 import './pages/index.css';
-import {createCard} from './scripts/card.js';
+import {createCard, likePic} from './scripts/card.js';
 import {openModal, closeModal}  from './scripts/modal.js';
 import {getAPI, patchProfile, postAPI, deleteCardAPI, putCardLikeAPI, patchAPI} from './scripts/api.js';
 import {enableValidation, clearValidation} from './scripts/validation.js';
@@ -35,7 +35,7 @@ const configValidation = {formSelector: '.popup__form',
 const adrCards = 'cards';
 const adrProfile = 'users/me';
 const adrProfileAvatar = 'users/me/avatar';
-const adrCardLike = 'cards/likes';
+
 
 let profileId;
 let activePopup;
@@ -83,36 +83,14 @@ function removeCard(element, idCard){
     }
     formDelete.onsubmit = (evt) => sendDeleteCard(evt, adrCards, idCard, element); 
 }
-//функция лайка
-function likePic(element, id, cardLike){
-
-   if(!element.classList.contains('card__like-button_is-active')) {
-        putCardLikeAPI(adrCardLike, id)
-        .then((data) => {
-            cardLike.textContent = data.likes.length;
-            element.classList.add('card__like-button_is-active');
-        })
-        .catch(err => {
-            console.log(err);
-        }) 
-   } else {
-        deleteCardAPI(adrCardLike, id)
-        .then((data) => {
-            cardLike.textContent = data.likes.length;
-            element.classList.remove('card__like-button_is-active');
-        })
-        .catch(err => {
-            console.log(err);
-        }) 
-   }
-}
 
 //редактирование аватарки
 editProfileImg.addEventListener('click', () => {
     activePopup = popupEditAvatar;
-    openModal(activePopup);
-    formEditAvatar.addEventListener('submit', submitProfileImg);
+    openModal(activePopup);   
 })
+
+formEditAvatar.addEventListener('submit', submitProfileImg);
 
 function submitProfileImg(evt){
     evt.preventDefault();
@@ -241,4 +219,4 @@ Promise.all([getAPI(adrProfile), getAPI(adrCards)])
 }) 
 
 export {activePopup};
-export {removeCard, likePic};
+export {putCardLikeAPI, deleteCardAPI};
